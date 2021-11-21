@@ -1,0 +1,16 @@
+<footer class="footer mt-5">
+    <hr class="horizontal dark mb-5">
+    <div class="container">
+
+        <div class="col-12">
+            <div class="text-center">
+                <p class="my-4 text-sm">
+                    All rights reserved. Copyright © <script>
+                        document.write(new Date().getFullYear())
+                    </script> Soft UI Design System by <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+    </div>
+</footer>

@@ -17,8 +17,8 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
-$routes->setDefaultMethod('index');
+// $routes->setDefaultController('/');
+// $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
 $routes->setAutoRoute(true);
@@ -31,7 +31,19 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/pembayaran-ukt', 'Home::index');
+$routes->get('/pembayaran-ukt/home', 'Home::home');
+
+// USER PROFILE
+$routes->get('/pembayaran-ukt/profile', 'UserController::index');
+$routes->get('/pembayaran-ukt/profile/edit', 'UserController::edit');
+$routes->post('/pembayaran-ukt/profile/save', 'UserController::save');
+
+// PEMBAYARAN USER
+$routes->get('/pembayaran-ukt/pembayaran', 'TagihanController::index');
+$routes->post('/pembayaran-ukt/pembayaran/lakukan-pembayaran', 'TagihanController::lakukanPembayaran');
+$routes->post('/pembayaran-ukt/pembayaran/konfirmasi-pembayaran', 'TagihanController::konfirmasiPembayaran');
+
 
 /*
  * --------------------------------------------------------------------
