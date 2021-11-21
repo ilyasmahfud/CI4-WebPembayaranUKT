@@ -14,15 +14,18 @@
                 <h3 class="text-center">Tagihan anda</h3>
                 <form enctype="multipart/form-data" role="form" id="contact-form" method="post" action='<?= base_url('pembayaran-ukt/pembayaran/konfirmasi-pembayaran'); ?>'>
                     <div class="card-body">
-                        <div class="mb-4">
-                            <label>Total Tagihan</label>
-                            <div class="input-group">
-                                <input name="nominal" disabled value='<?= $pembayaran['nominal_pembayaran'] ?>' type="number" class="form-control" placeholder="">
-                                <input type="hidden" name="tagihan_id" value="<?= $data1['tagihan_id']; ?>">
-                                <input type="hidden" name="nominal" value="<?= $pembayaran['nominal_pembayaran']; ?>">
-                                <input type="hidden" name="metode_pembayaran" value="<?= $pembayaran['metode_pembayaran']; ?>">
-                            </div>
+                        <!-- <div class="mb-4"> -->
+                        <label>Total Tagihan</label>
+                        <div class="input-group">
+                            <input name="nominal" disabled value='<?= $pembayaran['total_pembayaran'] ?>' class="form-control" placeholder="">
+                            <input type="hidden" name="tagihan_id" value="<?= $data1['tagihan_id']; ?>">
+                            <input type="hidden" name="nominal" value="<?= $pembayaran['nominal_pembayaran']; ?>">
+                            <input type="hidden" name="metode_pembayaran" value="<?= $pembayaran['metode_pembayaran']; ?>">
                         </div>
+                        <div class="text-danger mb-4">
+                            <small>* 3 digit terakhir</small>
+                        </div>
+                        <!-- </div> -->
 
                         <label>Alamat Pembayaran</label>
                         <hr>

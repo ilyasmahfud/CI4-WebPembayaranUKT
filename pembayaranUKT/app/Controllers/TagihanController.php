@@ -24,7 +24,7 @@ class TagihanController extends BaseController
         $data1 = $builder1->get()->getRowArray();
 
         $builder2 = $db->table('pembayaran');
-        $builder2->select('pembayaran.nominal AS nominal_terbayar');
+        $builder2->select('SUM(pembayaran.nominal) AS nominal_terbayar');
         $builder2->join('tagihan', 'tagihan.id = pembayaran.tagihan_id');
         $builder2->where('tagihan.user_id', user_id());
         $data2 = $builder2->get()->getRowArray();
@@ -32,8 +32,6 @@ class TagihanController extends BaseController
         if ($data1 == null) {
             return View('users/pembayaran/belum-waktunya');
         }
-
-        // dd($data);
 
         return View('users/pembayaran/index', compact('data1', 'data2'));
     }
@@ -47,9 +45,36 @@ class TagihanController extends BaseController
         $builder1->where('tagihan.user_id', user_id());
         $data1 = $builder1->get()->getRowArray();
 
+        $builder2 = $db->table('pembayaran');
+        $builder2->select('tagihan.nominal AS harusDibayar');
+        $builder2->join('tagihan', 'tagihan.id = pembayaran.tagihan_id');
+        $builder2->where('tagihan.user_id', user_id());
+        $data2 = $builder2->get()->getRowArray();
+
+        $builder3 = $db->table('pembayaran');
+        $builder3->select('SUM(pembayaran.nominal)AS nominalTerbayar');
+        $builder3->join('tagihan', 'tagihan.id = pembayaran.tagihan_id');
+        $builder3->where('tagihan.user_id', user_id());
+        $data3 = $builder3->get()->getRowArray();
+
+        $belumBayar = (int)$data2['harusDibayar'] - (int)$data3['nominalTerbayar'];
+
+        $userInput = $this->request->getPost('nominal_pembayaran');
+
+        if ((int)$userInput > (int)$belumBayar) {
+            session()->setFlashdata('errors', 'Nominal Melebihi Tagihan');
+            return redirect()->to('/pembayaran-ukt/pembayaran')->withInput();
+        }
+
+        $nominalPembayaran = $this->request->getPost('nominal_pembayaran');
+        $kodePembayaran = substr(str_shuffle("123456789"), 0, 3);
+
+        $totalPembayaran = (int)$nominalPembayaran + (int)$kodePembayaran;
+
         $pembayaran = ([
             'metode_pembayaran' => $this->request->getPost('metode_pembayaran'),
-            'nominal_pembayaran' => $this->request->getPost('nominal_pembayaran'),
+            'total_pembayaran' => $totalPembayaran,
+            'nominal_pembayaran' => $nominalPembayaran,
         ]);
 
         return View('users/pembayaran/lakukan_pembayaran', compact('pembayaran', 'data1'));
@@ -64,8 +89,6 @@ class TagihanController extends BaseController
         $fileFoto->move('img/bukti_pembayaran/', $namaFoto);
         $foto = ('img/bukti_pembayaran/' . $namaFoto);
 
-        // dd($this->request->getPost('nominal'));
-        // input ke database
         $this->pembayaran->save([
             'nominal' => $this->request->getPost('nominal'),
             'metode_pembayaran' => $this->request->getPost('metode_pembayaran'),

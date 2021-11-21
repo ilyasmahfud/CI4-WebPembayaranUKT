@@ -3,6 +3,30 @@
 <?= $this->section('content') ?>
 
 <div class="page-header">
+    <?php $validation = \config\Services::validation();
+    if (session()->has('errors')) {
+        echo "
+        <script>
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'error',
+                title: '" . session()->getFlashdata('errors') . "'
+            })
+        </script>
+        ";
+    }
+    ?>
     <!-- <div class="position-absolute fixed-top ms-auto w-50 h-100 rounded-3 z-index-0 d-none d-sm-none d-md-block me-n4" style="background-image: url(assets/img/ivancik.jpg); background-size: cover;">
     </div> -->
     <div class="container py-5" style="margin-top:100px">
@@ -35,16 +59,23 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label for="">Sudah dibayar</label>
+                                <label for="">Belum dibayar</label>
                                 <div class="input-group">
-                                    <input disabled value='<?= $data2['nominal_terbayar']; ?>' type="text" class="form-control" placeholder="">
+                                    <input disabled value='<?= $data1['nominal'] - $data2['nominal_terbayar']; ?>' type="text" class="form-control" placeholder="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="">Akan dibayar</label>
                                 <div class="input-group">
-                                    <input name="nominal_pembayaran" value='' type="text" class="form-control" placeholder="">
+                                    <input name="nominal_pembayaran" value='' type="number" min="100000" max="" class="form-control" placeholder="">
                                 </div>
+                                <?php
+                                if (session()->has('errors')) {
+                                    echo "
+                                        <small class='text-danger'>" . session()->getFlashdata('errors') . "</small>
+                                        ";
+                                }
+                                ?>
                             </div>
                         </div>
 
